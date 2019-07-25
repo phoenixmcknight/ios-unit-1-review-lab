@@ -38,6 +38,14 @@ establishment of an absolute Tyranny over these States. To prove this, let Facts
 candid world.
 """
 ```
+var newDec = declarationOfIndependence.components(separatedBy: " ").filter {$0.count > 5}
+
+var new = newDec.map {($0 ,1)}
+var newDict = Dictionary(new, uniquingKeysWith: +)
+var newDict2 = newDict.sorted(by: {$0.1 > $1.1})
+print(newDict2)
+var newDict3 = newDict2.first!
+print("\(newDict3.0) is the most frequently occurring word.")
 
 ## Question 2
 
@@ -47,6 +55,17 @@ Make an array that contains all elements that appear more than twice in someRepe
 ```swift
 var someRepeatsAgain = [25,11,30,31,50,28,4,37,13,20,24,38,28,14,44,33,7,43,39,35,36,42,1,40,7,14,23,46,21,39,11,42,12,38,41,48,20,23,29,24,50,41,38,23,11,30,50,13,13,16,10,8,3,43,10,20,28,39,24,36,21,13,40,25,37,39,31,4,46,20,38,2,7,11,11,41,45,9,49,31,38,23,41,16,49,29,14,6,6,11,5,39,13,17,43,1,1,15,25]
 ```
+var someRepeatsAgain = [25,11,30,31,50,28,4,37,13,20,24,38,28,14,44,33,7,43,39,35,36,42,1,40,7,14,23,46,21,39,11,42,12,38,41,48,20,23,29,24,50,41,38,23,11,30,50,13,13,16,10,8,3,43,10,20,28,39,24,36,21,13,40,25,37,39,31,4,46,20,38,2,7,11,11,41,45,9,49,31,38,23,41,16,49,29,14,6,6,11,5,39,13,17,43,1,1,15,25]
+var some = someRepeatsAgain.map({($0,1)})
+var emptyArray = [Int]()
+var newDict = Dictionary(some, uniquingKeysWith: +)
+for (key,value) in newDict {
+if value > 3 {
+emptyArray.append(key)
+}
+}
+print(emptyArray)
+
 
 ## Question 3
 
@@ -55,6 +74,18 @@ Identify if there are 3 integers in the following array that sum to 10. If so, p
 ```swift
 var tripleSumArr = [-20,-14, -8,-5,-3,-2,1,2,3,4,9,15,20,30]
 ```
+var tripleSumArr = [-20,-14, -8,-5,-3,-2,1,2,3,4,9,15,20,30]
+var emptyArray = [[Int]]()
+for i in tripleSumArr  {
+for j in tripleSumArr  where j != i {
+for k in tripleSumArr  where k != j && k != i {
+if i + j + k == 10 {
+emptyArray += [[i,j,k].sorted()]
+}
+}
+}
+}
+print(Set(emptyArray))
 
 
 ## Question 3
@@ -93,9 +124,28 @@ let letterValues = [
 a. Sort the string below in descending order according the dictionary letterValues
 var codeString = "aldfjaekwjnfaekjnf"
 
+var codeString = "aldfjaekwjnfaekjnf"
+var newDict = [String:Int]()
+for (letter,value) in letterValues {
+if codeString.contains(letter) {
+newDict[letter] = value
+}
+}
+print(newDict.sorted(by: {$0.value > $1.value}))
 
 b. Sort the string below in ascending order according the dictionary letterValues
 var codeStringTwo = "znwemnrfewpiqn"
+
+
+
+var codeString = "znwemnrfewpiqn"
+var newDict = [String:Int]()
+for (letter,value) in letterValues {
+if codeString.contains(letter) {
+newDict[letter] = value
+}
+}
+print(newDict.sorted(by: {$0.value < $1.value}))
 
 
 ## Question 4
@@ -108,6 +158,21 @@ Input: [[2,4,1],[3,0],[9,3]]
 
 Output: [9,3]
 ```
+
+var arrays = [[2,4,1],[3,0],[9,3]]
+var biggestArray = [Int]()
+var biggestSum = Int()
+
+for i in arrays {
+if i.reduce(0,+) > biggestSum {
+biggestSum = i.reduce(0, +)
+biggestArray = i
+}
+
+
+
+}
+print(biggestArray)
 
 ## Question 5
 
@@ -129,9 +194,59 @@ b. Write a function that takes in an array of `Receipts` and returns an array of
 
 c. Write a function that takes in an array of `Receipts` and returns an array of those receipts sorted by price
 
+struct Receipt {
+let storeName: String
+let items: [ReceiptItem]
+func totalCost() -> Double {
+var priceArr = [Double]()
+for item in items {
+priceArr.append(item.price)
+}
+return priceArr.reduce(0,+)
+}
+
+
+}
+
+
+struct ReceiptItem {
+let name: String
+let price: Double
+}
+
+func sameNames(receipt: [Receipt],storeName:String) -> [Receipt] {
+let returnArray = receipt.filter {( $0.storeName == storeName)
+}
+return returnArray
+}
+func sortedByPrice(ticket:[Receipt]) -> [Receipt] {
+let sortedPrice = ticket.sorted {$0.totalCost() < $1.totalCost()
+}
+return sortedPrice
+}
+
+
 ## Question 6
 
 a. The code below doesn't compile.  Why?  Fix it so that it does compile.
+
+//Mars is a let constant
+
+class Giant {
+var name: String
+var weight: Double
+var homePlanet: String
+
+init(name: String, weight: Double, homePlanet: String) {
+self.name = name
+self.weight = weight
+self.homePlanet = homePlanet
+
+let fred = Giant(name: "Fred", weight: 340.0, homePlanet: "Earth")
+
+fred.name = "Brick"
+fred.weight = 999.2
+fred.homePlanet = "Mars"
 
 ```swift
 class Giant {
@@ -154,6 +269,8 @@ fred.homePlanet = "Mars"
 ```
 
 b. Using the Giant class. What will the value of `edgar.name` be after the code below runs? How about `jason.name`? Explain why.
+
+//Both values will be "jason". Changing the value of jason.name will change the value of edgar name because class Giant is a reference type.
 
 ```swift
 let edgar = Giant(name: "Edgar", weight: 520.0, homePlanet: "Earth")
@@ -180,6 +297,15 @@ struct BankAccount {
 
 a. Explain why the code above doesn't compile, then fix it.
 
+func deposit needs to be a mutating function to make 'balance' mutable.
+
+mutating func deposit(_ amount: Double) {
+balance += amount
+}
+
+mutating func withdraw(_ amount: Double) {
+balance -= amount
+
 b. Add a property called `deposits` of type `[Double]` that stores all of the deposits made to the bank account
 
 c. Add a property called `withdraws` of type `[Double]` that stores all of the withdraws made to the bank account
@@ -187,6 +313,24 @@ c. Add a property called `withdraws` of type `[Double]` that stores all of the w
 d. Add a property called `startingBalance`.  Have this property be set to the original balance, and don't allow anyone to change it
 
 e. Add a method called `totalGrowth` that returns a double representing the change in the balance from the starting balance to the current balance
+
+struct BankAccount {
+var owner: String
+var balance: Double
+var deposits: Double
+var withdraws: Double
+mutating func deposit(_ amount: Double) {
+balance += amount
+}
+
+mutating func withdraw(_ amount: Double) {
+balance -= amount
+}
+func totalGrowth() -> Double {
+let growth = self.balance + withdraws - self.deposits
+return growth
+}
+}
 
 ## Question 8
 
